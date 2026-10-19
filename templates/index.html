@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ToDo List</title>
+</head>
+<body>
+    <h1>My ToDo List</h1>
+    <ul>
+        {% for task in tasks %}
+            {% if not task.done %}
+                <li> 
+                    {{task.name}}
+                    <!-- 完了ボタン -->
+                    <form action="{{ url_for('complete_task', task_id=loop.index0) }}" method="POST">
+                            <button type="submit">完了</button>
+                    </form>
+
+                    <!-- 削除ボタン -->
+                    <form action="{{ url_for('delete_task',task_id=loop.index0)}}" method="POST">
+                            <button type="submit">削除</button>
+                    </form>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h2>完了</h2>
+    <ul>
+        {% for task in tasks %}
+            {% if task.done %}
+                <li>{{ task.name }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
