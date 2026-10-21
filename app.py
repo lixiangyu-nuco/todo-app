@@ -2,15 +2,28 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-# タスクを保存するリスト
-tasks = [
-    {"name": "pythonの勉強", "done": False},
-    {"name": "Flaskの勉強", "done": False},
-    {"name": "ToDoリストの作成", "done": False}
-]
+# 1件のタスクを管理する
+class Todo:
+    def __init__(self, name):
+        self.name = name
+        self.done = False
 
-# 削除したタスクを保存するリスト
-deleted_tasks = []
+# 複数のタスクを管理する
+class TodoList:
+    def __init__(self):
+        self.tasks = []
+        self.deleted_tasks = [] 
+
+    # 新しいタスクを追加する
+    def add(self, task):
+        self.tasks.append(task)
+
+    # タスクを削除する
+    def delete(self, task_id):
+        deleted_task = self.tasks.pop(task_id)
+        self.deleted_tasks.append(deleted_task)
+
+
 
 # トップページを表示する
 @app.route("/")
