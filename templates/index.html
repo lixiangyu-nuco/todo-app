@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>ToDo List</title>
+    <style>
+        li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>My ToDo List</h1>
@@ -10,6 +18,7 @@
             {% if not task.done %}
                 <li> 
                     {{task.name}}
+
                     <!-- 完了ボタン -->
                     <form action="{{ url_for('complete_task', task_id=loop.index0) }}" method="POST">
                             <button type="submit">完了</button>
