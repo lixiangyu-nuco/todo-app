@@ -22,57 +22,64 @@
     </form>
 
     <!-- 未完了のタスク一覧 -->
-    <ul>
-        {% for task in tasks %}
-            {% if not task.done %}
-                <li> 
-                    <!-- チェックボックス -->
-                    <form action="{{ url_for('complete_task', task_id=loop.index0) }}" method="POST">
-                        <input type="checkbox" onchange="this.form.submit()">
-                    </form>
+    {% set pending_tasks = tasks | rejectattr('done') | list %}
 
-                    {{task.name}}
+    {% if pending_tasks %}
+        <h2>未完了</h2>
+        <ul>
+            {% for task in tasks %}
+                {% if not task.done %}
+                    <li>
+                        <form action="{{ url_for('complete_task', task_id=loop.index0) }}" method="POST">
+                            <input type="checkbox" onchange="this.form.submit()">
+                        </form>
 
-                    <!-- 削除ボタン -->
-                    <form action="{{ url_for('delete_task',task_id=loop.index0)}}" method="POST">
+                        {{ task.name }}
+
+                        <form action="{{ url_for('delete_task', task_id=loop.index0) }}" method="POST">
                             <button type="submit">削除</button>
-                    </form>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+                        </form>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <!-- 完了したタスク一覧 -->
-    <h2>完了</h2>
-    <ul>
-        {% for task in tasks %}
-            {% if task.done %}
+    {% set completed_tasks = tasks | selectattr('done') | list %}
+
+    {% if completed_tasks %}
+        <h2>完了</h2>
+        <ul>
+            {% for task in tasks %}
+                {% if task.done %}
+                    <li>
+                        <form action="{{ url_for('undo_task', task_id=loop.index0) }}" method="POST">
+                            <input type="checkbox" checked onchange="this.form.submit()">
+                        </form>
+
+                        {{ task.name }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- 削除したタスク一覧 -->
+    {% if deleted_tasks %}
+        <h2>削除済み</h2>
+        <ul>
+            {% for task in deleted_tasks %}
                 <li>
                     {{ task.name }}
 
-                    <!-- 戻すボタン -->
-                    <form action="{{ url_for('undo_task', task_id=loop.index0) }}" method="POST">
-                        <button type="submit">戻す</button>
-                    </form>                  
+                    <form action="{{ url_for('restore_task', task_id=loop.index0) }}" method="POST">
+                        <button type="submit">元に戻す</button>
+                    </form>
                 </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
-
-    <!-- 削除したタスク一覧 -->
-    <h2>削除済み</h2>
-    <ul>
-        {% for task in deleted_tasks %}
-            <li>
-                {{ task.name }}
-
-                <!-- 復元ボタン -->
-                <form action="{{ url_for('restore_task', task_id=loop.index0) }}" method="POST">
-                    <button type="submit">元に戻す</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
 </body>
 </html>
