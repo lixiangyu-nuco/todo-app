@@ -37,10 +37,16 @@
     <ul>
         {% for task in tasks %}
             {% if task.done %}
-                <li>{{ task.name }}</li>
+                <li>
+                    {{ task.name }}
+
+                    <!-- 戻すボタン -->
+                    <form action="{{ url_for('undo_task', task_id=loop.index0) }}" method="POST">
+                        <button type="submit">戻す</button>
+                    </form>                  
+                </li>
             {% endif %}
         {% endfor %}
     </ul>
-
 </body>
 </html>
