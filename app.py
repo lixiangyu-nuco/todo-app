@@ -15,7 +15,8 @@ class TodoList:
         self.deleted_tasks = [] 
 
     # 新しいタスクを追加する
-    def add(self, task):
+    def add(self, task_name):
+        task = Todo(task_name)
         self.tasks.append(task)
 
     # タスクを完了状態にする
@@ -36,63 +37,49 @@ class TodoList:
         restored_task = self.deleted_tasks.pop(task_id)
         self.tasks.append(restored_task)
 
-    
-
-
+# TodoListのインスタンスを作成する
+todo_list = TodoList()
 
 # トップページを表示する
 @app.route("/")
 def index():
     return render_template(
         "index.html", 
-        tasks=tasks,
-        deleted_tasks=deleted_tasks 
+        tasks=todo_list.tasks,
+        deleted_tasks=todo_list.deleted_tasks
     )
 
 # タスクを削除する
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
-    if 0 <= task_id < len(tasks):
-        deleted_task = tasks.pop(task_id)
-        deleted_tasks.append(deleted_task)
-    
+    todo_list.delete(task_id)
     return redirect("/")
 
-# タスクを完了・未完了に切り替える
+# タスクを完了状態にする
 @app.route("/complete/<int:task_id>", methods=["POST"])
 def complete_task(task_id):
-    if 0 <= task_id < len(tasks):
-        tasks[task_id]["done"] = not tasks[task_id]["done"]
+    todo_list.complete(task_id)
     return redirect("/")
+
 
 #完了したタスクを未完了に戻す
 @app.route("/undo/<int:task_id>",methods=["POST"])
 def undo_task(task_id):
-    if 0 <= task_id < len(tasks):
-        tasks[task_id]["done"] = False 
+    todo_list.undo(task_id)
     return redirect("/")
 
 # 新しいタスクを追加する
 @app.route("/add", methods=["POST"])
 def add_task():
     task_name = request.form.get("task_name")
-
     if task_name and task_name.strip():
-        tasks.append({
-            "name": task_name.strip(),
-            "done": False
-        })
-
+        todo_list.add(task_name.strip())
     return redirect("/")
-
 
 # 削除したタスクを元に戻す
 @app.route("/restore/<int:task_id>", methods=["POST"])
 def restore_task(task_id):
-    if 0 <= task_id < len(deleted_tasks):
-        restored_task = deleted_tasks.pop(task_id)
-        tasks.append(restored_task)
-
+    todo_list.restore(task_id)
     return redirect("/")
 
 # アプリを起動する
