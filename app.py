@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, request, redirect, url_for 
 
 app = Flask(__name__)
 
@@ -8,10 +8,13 @@ tasks = [
     {"name": "Flaskの勉強", "done": False},
     {"name": "ToDoリストの作成", "done": False}
 ]
+
+# トップページを表示する
 @app.route("/")
 def index():
     return render_template("index.html", tasks=tasks)
 
+# タスクを削除する
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
     if 0 <= task_id < len(tasks):
@@ -32,3 +35,20 @@ def undo_task(task_id):
         tasks[task_id]["done"] = False 
     return redirect("/")
 
+# 新しいタスクを追加する
+@app.route("/add", methods=["POST"])
+def add_task():
+    task_name = request.form.get("task_name")
+
+    if task_name and task_name.strip():
+        tasks.append({
+            "name": task_name.strip(),
+            "done": False
+        })
+
+    return redirect("/")
+
+
+# アプリを起動する
+if __name__ == "__main__":
+    app.run(debug=True)

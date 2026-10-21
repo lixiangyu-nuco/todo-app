@@ -13,6 +13,15 @@
 </head>
 <body>
     <h1>My ToDo List</h1>
+
+    <!-- 新しいタスクを追加する -->
+    <form action="{{ url_for('add_task') }}" method="POST">
+        <input type="text" name="task_name"
+               placeholder="新しいタスクを入力" required>
+        <button type="submit">追加</button>
+    </form>
+
+    <!-- 未完了のタスク一覧 -->
     <ul>
         {% for task in tasks %}
             {% if not task.done %}
@@ -33,6 +42,7 @@
         {% endfor %}
     </ul>
 
+    <!-- 完了したタスク一覧 -->
     <h2>完了</h2>
     <ul>
         {% for task in tasks %}
