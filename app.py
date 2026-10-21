@@ -9,16 +9,25 @@ tasks = [
     {"name": "ToDoリストの作成", "done": False}
 ]
 
+# 削除したタスクを保存するリスト
+deleted_tasks = []
+
 # トップページを表示する
 @app.route("/")
 def index():
-    return render_template("index.html", tasks=tasks)
+    return render_template(
+        "index.html", 
+        tasks=tasks,
+        deleted_tasks=deleted_tasks 
+    )
 
 # タスクを削除する
 @app.route("/delete/<int:task_id>", methods=["POST"])
 def delete_task(task_id):
     if 0 <= task_id < len(tasks):
-        tasks.pop(task_id)
+        deleted_task = tasks.pop(task_id)
+        deleted_tasks.append(deleted_task)
+    
     return redirect("/")
 
 # タスクを完了・未完了に切り替える
@@ -48,6 +57,15 @@ def add_task():
 
     return redirect("/")
 
+
+# 削除したタスクを元に戻す
+@app.route("/restore/<int:task_id>", methods=["POST"])
+def restore_task(task_id):
+    if 0 <= task_id < len(deleted_tasks):
+        restored_task = deleted_tasks.pop(task_id)
+        tasks.append(restored_task)
+
+    return redirect("/")
 
 # アプリを起動する
 if __name__ == "__main__":

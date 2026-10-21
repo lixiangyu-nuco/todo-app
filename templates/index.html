@@ -58,5 +58,21 @@
             {% endif %}
         {% endfor %}
     </ul>
+
+    <!-- 削除したタスク一覧 -->
+    <h2>削除済み</h2>
+    <ul>
+        {% for task in deleted_tasks %}
+            <li>
+                {{ task.name }}
+
+                <!-- 復元ボタン -->
+                <form action="{{ url_for('restore_task', task_id=loop.index0) }}" method="POST">
+                    <button type="submit">元に戻す</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+
 </body>
 </html>
