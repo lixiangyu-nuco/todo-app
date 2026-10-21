@@ -17,12 +17,12 @@
         {% for task in tasks %}
             {% if not task.done %}
                 <li> 
-                    {{task.name}}
-
-                    <!-- 完了ボタン -->
+                    <!-- チェックボックス -->
                     <form action="{{ url_for('complete_task', task_id=loop.index0) }}" method="POST">
-                            <button type="submit">完了</button>
+                        <input type="checkbox" onchange="this.form.submit()">
                     </form>
+
+                    {{task.name}}
 
                     <!-- 削除ボタン -->
                     <form action="{{ url_for('delete_task',task_id=loop.index0)}}" method="POST">
