@@ -14,19 +14,29 @@ class TodoList:
         self.tasks = []
         self.deleted_tasks = [] 
 
-        # 新しいタスクを追加する
-        def add(self, task):
-            self.tasks.append(task)
+    # 新しいタスクを追加する
+    def add(self, task):
+        self.tasks.append(task)
 
-        # タスクを完了状態にする
-        def complete(self, task_id):
-            self.tasks[task_id].done = True
+    # タスクを完了状態にする
+    def complete(self, task_id):
+        self.tasks[task_id].done = True
 
-        # タスクを削除する
-        def delete(self, task_id):
-            deleted_task = self.tasks.pop(task_id)
-            self.deleted_tasks.append(deleted_task)
+    # タスクを削除する
+    def delete(self, task_id):
+        deleted_task = self.tasks.pop(task_id)
+        self.deleted_tasks.append(deleted_task)
 
+    # 完了したタスクを未完了に戻す
+    def undo(self, task_id):
+        self.tasks[task_id].done = False 
+
+    # 削除したタスクを元に戻す
+    def restore(self, task_id):
+        restored_task = self.deleted_tasks.pop(task_id)
+        self.tasks.append(restored_task)
+
+    
 
 
 
